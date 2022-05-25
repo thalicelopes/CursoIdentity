@@ -29,9 +29,65 @@ namespace Id.Overview.Mvc.Proj
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+                //lockout
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                //password
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+
+                //Sign In
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                //Tokens
+
+                // options.Tokens.AuthenticatorTokenProvider
+                // options.Tokens.ChangeEmailTokenProvider
+                // options.Tokens.ChangePhoneNumberTokenProvider
+                // options.Tokens.EmailConfirmationTokenProvider
+                // options.Tokens.PasswordResetTokenProvider
+
+                //User
+
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.@+";
+                //Valor Default: False
+                options.User.RequireUniqueEmail = false;
+
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                // options.ClaimsIssuer = "";
+                // Local - options.Cookie.Domain = "";
+                //options.Cookie.Expiration = "";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Name = ".AspNetCore.Cookies";
+                //options.Cookie.Path = "";
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+                // options.CookieManager = 
+                //options.DataProtectionProvider
+                //options.Events
+                // options.EventsType = 
+                options.ExpireTimeSpan = TimeSpan.FromDays(14);
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.ReturnUrlParameter = "ReturnUrl";
+                // options.SessionStore = "";
+                options.SlidingExpiration = true;
+                // options.TicketDataFormat = 
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
