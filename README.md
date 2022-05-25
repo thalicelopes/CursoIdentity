@@ -18,7 +18,11 @@ Migração para banco de dados:
 Criar arquivo .gitignore:
     dotnet new gitignore
 
+# Projetos com Identity criados no VSCODE pelo terminal e pelo Visual Studio.
 
+# Comandos para instalação de pacotes pelo Package Manager Console:
+- install-package Microsoft.AspnetCore.Identity
+- Entity framework para Identity: install-package Microsoft.AspnetCore.Identity.EntityFrameworkCore
 
 
 
